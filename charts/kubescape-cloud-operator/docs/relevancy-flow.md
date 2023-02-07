@@ -62,14 +62,12 @@ sequenceDiagram
     rect rgb(191, 223, 255)
     # Generating SBOM API
     Operator ->>+ KubeAPI: Watch for pods
-    Operator ->>+ Kubevuln: Generate SBOM (imageID, WorkloadMetadata)
-    Kubevuln ->>+ Storage: Get SBOM (imageID)
-    alt SBOM found
-        Storage ->>+ Kubevuln: Return SBOM 
-        Kubevuln ->>+ Storage: Update workload metadata (if needed) 
-    else SBOM not found
+    alt Is this a new imageID:
+        Operator ->>+ Kubevuln: Generate SBOM (imageID)
         Kubevuln ->>+ Kubevuln: Generate SBOM (Using Grype)
         Kubevuln ->>+ Storage: Store SBOM (key: imageID. metadata: SiftVersion)
+    else New workload:
+        Operator ->>+ Kubevuln: Scan for CVEs (imageID, WLID)
     end
     end
 
@@ -90,7 +88,7 @@ sequenceDiagram
     else
         Operator ->>+ KubeAPI: Watch for SBOM's in storage
     end
-    Operator ->>+ Kubevuln: Scan CVEs (instanceID, imageID, metadata)
+    Operator ->>+ Kubevuln: Scan CVEs (instanceID, imageID, WLID)
     Kubevuln ->>+ Storage: Get SBOM (imageID)
     Kubevuln ->>+ Storage: Get SBOM' (instanceID)
     Kubevuln ->>+ Kubevuln: Scan SBOM for CVEs (using Grype)
