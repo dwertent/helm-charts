@@ -4,17 +4,18 @@ A user is running the operator for the first time.
 ```mermaid
 
 sequenceDiagram
-    Operator ->>+ KubeAPI: Get all workloads and imagesIDs
-    Operator ->>+ Kubevuln: Scan workload (WLID + imagesIDs)
-    Kubevuln ->>+ Storage: Get SBOM (imageID + SiftVersion)
+    Operator ->>+ KubeAPI: Watch all Pods and imagesIDs
+    Operator ->>+ Kubevuln: Generate SBOM (imageID, WorkloadMetadata)
     alt SBOM found
         Storage ->>+ Kubevuln: Return SBOM 
+        Kubevuln ->>+ Storage: Update workload metadata (if needed) 
     else SBOM not found
-        Kubevuln ->>+ Kubevuln: Generate SBOM (using Sift)
+        Kubevuln ->>+ Kubevuln: Generate SBOM (Using Grype)
         Kubevuln ->>+ Storage: Store SBOM (key: imageID. metadata: SiftVersion)
     end
-    Kubevuln ->>+ Kubevuln: Scan SBOM for CVEs (using Grype)
-    Kubevuln ->>+ Storage: Store CVE Manifest (key: imageID, metadata: SiftVersion, GrypeDBVersion)
+    Operator ->>+ Storage: Watch for new SBOMs
+    Operator ->>+ Kubevuln: Scan CVEs (imageID, WLID, WorkloadMetadata)
+    Kubevuln ->>+ Storage: Store CVE Manifest (key: imageID, metadata: SiftVersion, GrypeDBVersion, WorkloadMetadata)
     Kubevuln ->>+ ARMO Platform: Submit CVE Manifest (key: WLID+ImageID, metadata: TBD)
 ```
 
@@ -24,17 +25,14 @@ A user is creating a new workload with a new image or the user is updating his e
 
 ```mermaid
 sequenceDiagram
-    User ->>+ KubeAPI: Create new workload/update image
-    par Generating SBOM
-        KubeAPI ->>+ Operator: New workload (the operator is watching for new workloads using the pod watch)
-        Operator ->>+ Kubevuln: Generate SBOM (WLID + imagesIDs)
-        Kubevuln ->>+ Storage: Get SBOM (imageID + SiftVersion)
-        alt SBOM found
-            Storage ->>+ Kubevuln: Return SBOM 
-        else SBOM not found
-            Kubevuln ->>+ Kubevuln: Generate SBOM (using Sift)
-            Kubevuln ->>+ Storage: Store SBOM (key: imageID. metadata: SiftVersion)
-        end
+    Operator ->>+ KubeAPI: Watch all Pods and imagesIDs
+    Operator ->>+ Kubevuln: Generate SBOM (imageID, WorkloadMetadata)
+    alt SBOM found
+        Storage ->>+ Kubevuln: Return SBOM 
+        Kubevuln ->>+ Storage: Update workload metadata (if needed) 
+    else SBOM not found
+        Kubevuln ->>+ Kubevuln: Generate SBOM (Using Grype)
+        Kubevuln ->>+ Storage: Store SBOM (key: imageID. metadata: SiftVersion)
     end
         
     # In the end of the process, the storage will have the SBOM for the new image
@@ -53,6 +51,54 @@ sequenceDiagram
 
 ```
 
+
+
+## Operator - Kubevuln
+
+
+```mermaid
+sequenceDiagram
+    Note over Operator: Generate SBOM flow 
+    rect rgb(191, 223, 255)
+    # Generating SBOM API
+    Operator ->>+ KubeAPI: Watch for pods
+    Operator ->>+ Kubevuln: Generate SBOM (imageID, WorkloadMetadata)
+    Kubevuln ->>+ Storage: Get SBOM (imageID)
+    alt SBOM found
+        Storage ->>+ Kubevuln: Return SBOM 
+        Kubevuln ->>+ Storage: Update workload metadata (if needed) 
+    else SBOM not found
+        Kubevuln ->>+ Kubevuln: Generate SBOM (Using Grype)
+        Kubevuln ->>+ Storage: Store SBOM (key: imageID. metadata: SiftVersion)
+    end
+    end
+
+    rect rgb(200, 150, 255)
+    Note over Sniffer: Generate SBOM' flow 
+    Node ->>+ Sniffer: New container is running (ebpf)
+    Sniffer ->>+ Sniffer: Start sniffing on this new container
+    KubeAPI ->>+ Sniffer: New pod is running on this node
+    Storage ->>+ Sniffer: New SBOM is ready for this imageID
+    Sniffer ->> Sniffer: Generate SBOM'
+    Sniffer ->> Storage: Store SBOM' AFTER duration X OR when container exists with 0 (key: InstanceID, metadata: SiftVersion) OR CPU/Memory usage is high  
+    end
+
+    rect rgb(191, 223, 255)
+    Note over Operator: Scanning for CVEs flow 
+    alt Watch
+        Operator ->>+ KubeAPI: Watch for SBOMs in storage
+    else
+        Operator ->>+ KubeAPI: Watch for SBOM's in storage
+    end
+    Operator ->>+ Kubevuln: Scan CVEs (instanceID, imageID, metadata)
+    Kubevuln ->>+ Storage: Get SBOM (imageID)
+    Kubevuln ->>+ Storage: Get SBOM' (instanceID)
+    Kubevuln ->>+ Kubevuln: Scan SBOM for CVEs (using Grype)
+    Kubevuln ->>+ Kubevuln: Scan SBOM' for CVEs (using Grype)
+    Kubevuln ->>+ Storage: Store CVE Manifest (key: imageID, metadata: SiftVersion, GrypeDBVersion)
+    Kubevuln ->>+ ARMO Platform: Submit CVE Manifest (key: WLID+ImageID, metadata: TBD)
+    end
+```
 
 ## Recurring scan
 
