@@ -3,8 +3,8 @@ name: relevancy-helm-release
 on:
   push:
     paths:
-      - 'labs/kubescape-relevancy/Chart.yaml'
-    branches: [ relevancy, main, master ]
+      - 'charts/kubescape-relevancy/Chart.yaml'
+    branches: [ relevancy, relevancy-chart, main, master ]
    
 jobs:
    
