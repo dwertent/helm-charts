@@ -528,7 +528,7 @@ nodeAgent:
   config: 
     name: node-agent-config-map
     maxSniffingTime: 360 # minutes
-    updateDataPeriod: 60 # seconds
+    updateDataPeriod: 300 # seconds
 
   daemonset: 
     name: node-agent
