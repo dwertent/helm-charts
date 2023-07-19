@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.ksNamespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: {{ .Values.kubevuln.name }}
 subjects:
 - kind: ServiceAccount
