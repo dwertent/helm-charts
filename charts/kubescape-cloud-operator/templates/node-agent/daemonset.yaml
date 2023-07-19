@@ -91,8 +91,6 @@ spec:
         - name: {{ .Values.nodeAgent.containers.nodeAgent.name }}
           image: "{{ .Values.nodeAgent.containers.nodeAgent.image.repository }}:{{ .Values.nodeAgent.containers.nodeAgent.image.tag }}"
           imagePullPolicy: {{ .Values.nodeAgent.containers.nodeAgent.image.pullPolicy }}
-          resources:
-{{ toYaml .Values.nodeAgent.resources | indent 12 }}
           env:
             - name: GOMEMLIMIT
               value: "{{ .Values.nodeAgent.resources.requests.memory }}B"

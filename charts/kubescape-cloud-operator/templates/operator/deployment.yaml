@@ -70,8 +70,6 @@ spec:
               port: readiness-port
             initialDelaySeconds: 10
             periodSeconds: 5
-          resources:
-{{ toYaml .Values.operator.resources | indent 12 }}
           env:
             - name: GOMEMLIMIT
               value: "{{ .Values.operator.resources.requests.memory }}B"

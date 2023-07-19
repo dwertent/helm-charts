@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-ksNamespace: kubescape
-ksLabel: kubescape
+ksNamespace: kubescape-inspektor
+ksLabel: kubescape-inspektor
 createKubescapeServiceAccount: true # TODO: move to kubescape
 
 capabilities:
@@ -94,11 +94,11 @@ global:
   addRevisionLabel: true
   httpsProxy: ""
   proxySecretFile: ""
-  proxySecretName: kubescape-proxy-certificate
-  namespaceTier: ks-control-plane
-  cloudConfig: ks-cloud-config
+  proxySecretName: kubescape-proxy-certificate-inspektor
+  namespaceTier: ks-control-plane-inspektor
+  cloudConfig: ks-cloud-config-inspektor
   kubescapePsp:
-    name: ks-allow-privileged
+    name: ks-allow-privileged-inspektor
     enabled: false
   networkPolicy:
     enabled: false
@@ -156,7 +156,7 @@ kubescape:
   # -- enable/disable kubescape scanning
   enabled: true
 
-  name: kubescape
+  name: kubescape-inspektor
 
   image:
     # -- source code: https://github.com/kubescape/kubescape/tree/master/httphandler (public repo)
@@ -223,7 +223,7 @@ operator:
   replicaCount: 1
 
   # operator Deployment name
-  name: operator
+  name: operator-inspektor
 
   image:
     # -- source code: https://github.com/kubescape/operator
@@ -306,7 +306,7 @@ kubevuln:
   enabled: true
 
   # kubevuln Deployment name
-  name: kubevuln
+  name: kubevuln-inspektor
 
   image:
     # -- source code: https://github.com/kubescape/kubevuln
@@ -357,7 +357,7 @@ kollector:
   enabled: true
 
   # kollector SS name
-  name: kollector
+  name: kollector-inspektor
 
   image:
     # -- source code: https://github.com/kubescape/kollector
@@ -400,7 +400,7 @@ gateway:
   enabled: true
 
   # gateway Deployment name
-  name: gateway
+  name: gateway-inspektor
 
   websocketService:
     type: ClusterIP
@@ -526,12 +526,12 @@ storage:
   enabled: true
 
   # Values or the Aggregated APIServer
-  name: "storage"
+  name: "storage-inspektor"
 
   labels:
-    app.kubernetes.io/name: "storage"
-    app.kubernetes.io/component: "apiserver"
-    app.kubernetes.io/part-of: "kubescape-storage"
+    app.kubernetes.io/name: "storage-inspektor"
+    app.kubernetes.io/component: "apiserver-inspektor"
+    app.kubernetes.io/part-of: "kubescape-storage-inspektor"
 
   resources:
     requests:
@@ -550,7 +550,7 @@ storage:
 grypeOfflineDB:
   enabled: false
 
-  name: grype-offline-db
+  name: grype-offline-db-inspektor
 
   image:
     repository: ghcr.io/alexandreroman/grype-offline-db
@@ -566,7 +566,7 @@ grypeOfflineDB:
        memory: 200Mi
 
 nodeAgent:
-  name: "node-agent"
+  name: "node-agent-inspektor"
 
   config: 
     maxLearningPeriod: 3h # duration string
@@ -606,8 +606,8 @@ nodeAgent:
     nodeAgent:
       name: node-agent
       image:
-        repository: quay.io/kubescape/node-agent
-        tag: v0.1.77
+        repository: quay.io/dwertent/node-agent
+        tag: v0.1.5
         pullPolicy: IfNotPresent
       env:
         - name: NodeName

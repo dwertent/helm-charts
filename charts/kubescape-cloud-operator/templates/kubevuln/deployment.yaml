@@ -65,11 +65,9 @@ spec:
             httpGet:
               path: /v1/readiness
               port: {{ .Values.kubevuln.service.port }}
-          resources:
-{{ toYaml .Values.kubevuln.resources | indent 12 }}
           env:
             - name: GOMEMLIMIT
-              value: "{{ .Values.kubevuln.resources.requests.memory }}B"
+              value: "500B"
             - name: KS_LOGGER_LEVEL
               value: "{{ .Values.logger.level }}"
             - name: KS_LOGGER_NAME

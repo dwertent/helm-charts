@@ -66,8 +66,6 @@ spec:
         command:
         - "/otelcol"
         - "--config=/conf/otel-collector-config.yaml"
-        resources:
-{{ toYaml .Values.otelCollector.resources | indent 14 }}            
         volumeMounts:
         - name: otel-collector-config-volume
           mountPath: /conf

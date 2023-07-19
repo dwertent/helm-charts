@@ -138,8 +138,6 @@ spec:
         {{- end }}
         command:
         - ksserver
-        resources:
-{{ toYaml .Values.kubescape.resources | indent 14 }}            
         volumeMounts:
         - name: kubescape-config-volume
           mountPath: /home/ks/.kubescape/config.json
