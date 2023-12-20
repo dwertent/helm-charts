@@ -150,7 +150,7 @@ kubescapeScheduler:
     # -- source code: https://github.com/kubescape/http-request (public repo)
     repository: quay.io/kubescape/http-request
     tag: v0.0.14
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -180,7 +180,7 @@ kubescape:
     # -- source code: https://github.com/kubescape/kubescape/tree/master/httphandler (public repo)
     repository: quay.io/kubescape/kubescape
     tag: v3.0.2-prerelease
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   resources:
     requests:
@@ -237,9 +237,9 @@ operator:
 
   image:
     # -- source code: https://github.com/kubescape/operator
-    repository: quay.io/kubescape/operator
-    tag: v0.1.67
-    pullPolicy: IfNotPresent
+    repository: quay.io/dwertent/operator
+    tag: v0.0.0
+    pullPolicy: Always
 
   service:
     type: ClusterIP
@@ -285,7 +285,7 @@ kubevulnScheduler:
     # source code - https://github.com/kubescape/http-request
     repository: quay.io/kubescape/http-request
     tag: v0.0.14
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -317,9 +317,9 @@ kubevuln:
 
   image:
     # -- source code: https://github.com/kubescape/kubevuln
-    repository: quay.io/kubescape/kubevuln
-    tag: v0.2.133
-    pullPolicy: IfNotPresent
+    repository: quay.io/dwertent/kubevuln
+    tag: v0.0.0
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -367,7 +367,7 @@ kollector:
     # -- source code: https://github.com/kubescape/kollector
     repository: quay.io/kubescape/kollector
     tag: v0.1.33
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -418,7 +418,7 @@ gateway:
     # -- source code: https://github.com/kubescape/gateway
     repository: quay.io/kubescape/gateway
     tag: v0.1.20
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
   resources:
@@ -443,7 +443,7 @@ hostScanner:
     # -- source code: https://github.com/kubescape/host-scanner (public repo)
     repository: quay.io/kubescape/host-scanner
     tag: v1.0.66
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   # Additional volumes to be mounted on the Kubescape host scanner
   volumes: [ ]
@@ -483,7 +483,7 @@ registryScanScheduler:
     # -- source code: https://github.com/kubescape/http-request (public repo)
     repository: quay.io/kubescape/http-request
     tag: v0.0.14
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -521,7 +521,7 @@ otelCollector:
   image:
     repository: docker.io/otel/opentelemetry-collector
     tag: 0.86.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   replicaCount: 1
 
@@ -555,9 +555,9 @@ storage:
 
   replicaCount: 1
   image:
-    repository: quay.io/kubescape/storage
-    tag: v0.0.47
-    pullPolicy: IfNotPresent
+    repository: quay.io/dwertent/storage
+    tag: v0.0.0
+    pullPolicy: Always
 
 
 grypeOfflineDB:
@@ -568,7 +568,7 @@ grypeOfflineDB:
   image:
     repository: ghcr.io/alexandreroman/grype-offline-db
     sha: sha256:155db3be4baa461a50cebadfc8f52108fca71aa4ce5e460a30a4e0922e899ed2
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   resources:
     requests:
@@ -581,9 +581,9 @@ grypeOfflineDB:
 nodeAgent:
   name: node-agent
   image:
-    repository: quay.io/kubescape/node-agent
-    tag: v0.1.128
-    pullPolicy: IfNotPresent
+    repository: quay.io/dwertent/node-agent
+    tag: v0.0.0
+    pullPolicy: Always
 
   config:
     maxLearningPeriod: 3h # duration string
@@ -670,21 +670,21 @@ serviceDiscovery:
     image:
       repository: quay.io/kubescape/http-request
       tag: v0.2.2
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
 
   configMapCheck:
     name: check-url-configmap
     image:
       repository: docker.io/bitnami/kubectl
       tag: 1.27.6
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
 
   configMapUpdate:
     name: update-configmap
     image:
       repository: docker.io/bitnami/kubectl
       tag: 1.27.6
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
 
   resources:
     requests:
@@ -698,8 +698,8 @@ synchronizer:
   name: synchronizer
   image:
     repository: quay.io/kubescape/synchronizer
-    tag: v0.0.17
-    pullPolicy: IfNotPresent
+    tag: v0.0.21
+    pullPolicy: Always
   resources:
     requests:
       cpu: 100m
@@ -714,7 +714,7 @@ helmReleaseUpgrader:
   image:
     repository: "quay.io/kubescape/helm-release-upgrader"
     tag: "v0.1.0"
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
 
   # A cron schedule of how often the updating CronJob should run
   schedule: "0 14 * * *"
